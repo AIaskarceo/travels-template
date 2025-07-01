@@ -1,0 +1,13 @@
+/* src/components/Body.css */
+
+.body-bg {
+  background: linear-gradient(
+    135deg,
+    #a8edea 0%,
+    #e0f8ec 30%,
+    #98f9b1 60%,
+    #56ab2f 100%
+  );
+  background-attachment: fixed;
+  background-size: cover;
+}
