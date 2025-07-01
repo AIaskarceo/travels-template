@@ -1,4 +1,5 @@
 {
+  "homepage": "https://AIaskarceo.github.io/travels-template",
   "name": "travels-template",
   "private": true,
   "version": "0.0.0",
@@ -6,12 +7,16 @@
   "scripts": {
     "dev": "vite",
     "build": "vite build",
+    "predeploy": "npm run build",
+    "deploy": "gh-pages -d dist",
     "lint": "eslint .",
     "preview": "vite preview"
   },
   "dependencies": {
     "@lottiefiles/dotlottie-react": "^0.14.2",
     "emailjs-com": "^3.2.0",
+    "gh-pages": "^6.3.0",
+    "github-pages": "^3.0.2",
     "gsap": "^3.13.0",
     "lottie-react": "^2.4.1",
     "react": "^19.1.0",
