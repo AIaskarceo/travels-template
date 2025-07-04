@@ -1,0 +1,11 @@
+.poppins-i{
+  font-family: "Poppins";
+}
+.foot-bg {
+  background: linear-gradient(
+    0deg,
+    rgba(34, 139, 87, 0.85) 5%,     /* sea green (rich & clean) */
+    rgba(0, 191, 99, 0.8) 50%,      /* strong vibrant green */
+    rgba(144, 238, 144, 0.7) 95%    /* light green fade */
+  );
+}

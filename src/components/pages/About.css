@@ -4,5 +4,10 @@
   font-style: bold;
 }
 .bg-own{
-    background-color: rgba(117, 220, 220, 0.579);
+    background: linear-gradient(
+    10deg,
+    rgba(209, 213, 219, 1) 22%,
+    rgba(51, 78, 144, 1) 46%,
+    rgba(67, 65, 68, 1) 70%
+    )
 }
