@@ -95,8 +95,7 @@ export default function PageBody() {
               L 1200 1052
             "
             fill="none"
-            stroke="#00bfa6"
-            strokeWidth="2"
+           
           />
         </svg>
 
