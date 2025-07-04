@@ -8,7 +8,7 @@ import beach from "../assets/beach.png";
 import temple from "../assets/temple.png";
 import hills from "../assets/hills.png";
 import bus from "../assets/bus1.webm";
-import "./Page-body.css"; // Add this for custom background
+import "./Page-body.css";
 
 gsap.registerPlugin(ScrollTrigger, MotionPathPlugin);
 
@@ -22,95 +22,103 @@ export default function PageBody() {
     const video = videoRef.current;
 
     const handleLoaded = () => {
-      setDuration(video.duration);
+      requestAnimationFrame(() => {
+        setDuration(video.duration);
 
-      // gsap.set(wrapperRef.current, {
-      //   xPercent: 30,
-      //   yPercent: 34,
-      //   rotate: 5,
-      // });
+        // Center the bus on the path
+        gsap.set(wrapperRef.current, {
+          xPercent: -50,
+          yPercent: -50,
+        });
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".motion-container",
-          start: "top top",
-          end: "bottom 90%",
-          scrub: 1,
-          markers: false,
-        },
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".motion-container",
+            start: "top top",
+            end: "bottom 90%",
+            scrub: 1,
+            markers: false,
+          },
+        });
+
+        tl.to(wrapperRef.current, {
+          motionPath: {
+            path: pathRef.current,
+            align: pathRef.current,
+            alignOrigin: [0.5, 0.5],
+            autoRotate: true,
+          },
+          modifiers: {
+            rotation: (value) => {
+              const angle = parseFloat(value);
+              const normalized = (angle + 360) % 360;
+              return normalized > 90 && normalized < 270 ? angle + 180 : angle;
+            },
+          },
+          ease: "none",
+        });
+
+        tl.to(video, {
+          currentTime: video.duration,
+          ease: "none",
+        }, 0);
       });
-
-      tl.to(wrapperRef.current, {
-        motionPath: {
-          path: pathRef.current,
-          align: pathRef.current,
-          alignOrigin: [0.25, 0.65],
-          autoRotate: true,
-        },
-        ease: "none",
-      });
-
-      tl.to(video, {
-        currentTime: video.duration,
-        ease: "none",
-      }, 0);
     };
 
-    if (video.readyState >= 1) {
+    // Use `window.onload` for full layout + image loading on hosted sites
+    if (document.readyState === "complete") {
       handleLoaded();
     } else {
-      video.addEventListener("loadedmetadata", handleLoaded);
+      window.addEventListener("load", handleLoaded);
     }
 
     return () => {
-      video.removeEventListener("loadedmetadata", handleLoaded);
+      window.removeEventListener("load", handleLoaded);
     };
   }, []);
 
   return (
     <div className="text-gray-800 body-bg relative motion-container">
-      {/* 🛣️ SVG Path */}
-     <div className="absolute top-0 left-0 w-full h-full z-10 pointer-events-none overflow-visible">
-  <svg className="w-full h-full">
- <path
-  ref={pathRef}
-  d="
-    M 20 485.5
-    L 1300 485.5
-    L 20 485.5
-    C 20 655,30 635, 420 635
-    Q 447 635, 447 675
-    L 447 1000
-    Q 447 1052, 487 1052
-    L 1200 1052
-  "
-  fill="none"
-  
-/>
+      {/* 🛣️ SVG Path & Animated Bus */}
+      <div className="absolute top-0 left-0 w-full h-full z-10 pointer-events-none overflow-visible">
+        <svg className="w-full h-full">
+          <path
+            ref={pathRef}
+            d="
+              M 20 485.5
+              L 1300 485.5
+              L 20 485.5
+              C 20 655,30 635, 420 635
+              Q 447 635, 447 675
+              L 447 1000
+              Q 447 1052, 487 1052
+              L 1200 1052
+            "
+            fill="none"
+            stroke="#00bfa6"
+            strokeWidth="2"
+          />
+        </svg>
 
-  </svg>
-
-  <div
-    ref={wrapperRef}
-    className="absolute top-0 left-0 w-[12vw] max-w-[100px] h-[12vw] max-h-[100px] z-20"
-  >
-    <video
-      ref={videoRef}
-      src={bus}
-      muted
-      playsInline
-      preload="auto"
-      className="w-full h-full object-contain block"
-    />
-  </div>
-</div>
+        <div
+          ref={wrapperRef}
+          className="absolute top-0 left-0 w-[12vw] max-w-[100px] h-[12vw] max-h-[100px] z-20"
+        >
+          <video
+            ref={videoRef}
+            src={bus}
+            muted
+            playsInline
+            preload="auto"
+            className="w-full h-full object-contain block"
+          />
+        </div>
+      </div>
 
       {/* Hero Section */}
       <section
         className="h-[75vh] bg-cover bg-center flex items-center justify-start px-10"
-        style={{
-          backgroundImage: `url(${heroImage})`,
-        }}
+        style={{ backgroundImage: `url(${heroImage})` }}
       >
         <div className="p-8 rounded-lg">
           <h1 className="text-4xl md:text-6xl font-bold text-white mb-4">
@@ -146,9 +154,15 @@ export default function PageBody() {
                 key={index}
                 className="bg-white/30 backdrop-blur-md hover:shadow-2xl transition duration-300 rounded-xl overflow-hidden shadow-md"
               >
-                <img src={image} alt={titles[index]} className="w-full h-56 object-cover" />
+                <img
+                  src={image}
+                  alt={titles[index]}
+                  className="w-full h-56 object-cover"
+                />
                 <div className="p-6">
-                  <h3 className="text-xl font-semibold mb-2 text-green-700">{titles[index]}</h3>
+                  <h3 className="text-xl font-semibold mb-2 text-green-700">
+                    {titles[index]}
+                  </h3>
                   <p className="text-gray-700">{descriptions[index]}</p>
                 </div>
               </div>
