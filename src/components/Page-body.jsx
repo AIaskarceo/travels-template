@@ -1,4 +1,4 @@
-import React, { useEffect, useRef, useState } from "react";
+import React, { useLayoutEffect, useRef, useState } from "react";
 import gsap from "gsap";
 import { ScrollTrigger } from "gsap/ScrollTrigger";
 import { MotionPathPlugin } from "gsap/MotionPathPlugin";
@@ -18,67 +18,70 @@ export default function PageBody() {
   const videoRef = useRef(null);
   const [duration, setDuration] = useState(0);
 
-  useEffect(() => {
-    const video = videoRef.current;
+  
+useLayoutEffect(() => {
+  const video = videoRef.current;
 
-    const handleLoaded = () => {
-      requestAnimationFrame(() => {
-        setDuration(video.duration);
+  const handleLoaded = () => {
+    requestAnimationFrame(() => {
+      setDuration(video.duration);
 
-        // Center the bus on the path
-        gsap.set(wrapperRef.current, {
-          xPercent: -50,
-          yPercent: -50,
-        });
-
-        const tl = gsap.timeline({
-          scrollTrigger: {
-            trigger: ".motion-container",
-            start: "top top",
-            end: "bottom 90%",
-            scrub: 1,
-            markers: false,
-          },
-        });
-
-        tl.to(wrapperRef.current, {
-          motionPath: {
-            path: pathRef.current,
-            align: pathRef.current,
-            alignOrigin: [0.2, 0.2],
-            autoRotate: true,
-          },
-          modifiers: {
-            rotation: (value) => {
-              const angle = parseFloat(value);
-              const normalized = (angle + 360) % 360;
-              return normalized > 90 && normalized < 270 ? angle + 180 : angle;
-            },
-          },
-          ease: "none",
-        });
-
-        tl.to(video, {
-          currentTime: video.duration,
-          ease: "none",
-        }, 0);
+      gsap.set(wrapperRef.current, {
+        xPercent: -50,
+        yPercent: -50,
       });
-    };
 
-    // Use `window.onload` for full layout + image loading on hosted sites
-    if (document.readyState === "complete") {
-      handleLoaded();
-    } else {
-      window.addEventListener("load", handleLoaded);
-    }
+      const tl = gsap.timeline({
+        scrollTrigger: {
+          trigger: ".motion-container",
+          start: "top top",
+          end: "bottom 90%",
+          scrub: 1,
+          markers: false,
+          invalidateOnRefresh: true,
+        },
+      });
 
-    return () => {
-      window.removeEventListener("load", handleLoaded);
-    };
-  }, []);
+      tl.to(wrapperRef.current, {
+        motionPath: {
+          path: pathRef.current,
+          align: pathRef.current,
+          alignOrigin: [0.5, 0.5],
+          autoRotate: true,
+        },
+        modifiers: {
+          rotation: (value) => {
+            const angle = parseFloat(value);
+            const normalized = (angle + 360) % 360;
+            return normalized > 90 && normalized < 270 ? angle + 180 : angle;
+          },
+        },
+        ease: "none",
+      });
+
+      tl.to(video, {
+        currentTime: video.duration,
+        ease: "none",
+      }, 0);
+
+      // Refresh scroll trigger in case layout shifts
+      ScrollTrigger.refresh();
+    });
+  };
+
+  if (video.readyState >= 1) {
+    handleLoaded();
+  } else {
+    video.addEventListener("loadedmetadata", handleLoaded);
+  }
+
+  return () => {
+    video.removeEventListener("loadedmetadata", handleLoaded);
+  };
+}, []);
 
   return (
-    <div className="text-gray-800 body-bg relative motion-container">
+    <div className="text-gray-800 body-bg relative motion-container min-[100vh]:">
       {/* 🛣️ SVG Path & Animated Bus */}
       <div className="absolute top-0 left-0 w-full h-full z-10 pointer-events-none overflow-visible">
         <svg className="w-full h-full">
@@ -87,7 +90,7 @@ export default function PageBody() {
             d="
               M 20 485.5
               L 1300 485.5
-              L 20 500
+              L 20 485.5
               C 20 655,30 635, 420 635
               Q 447 635, 447 675
               L 447 1000
@@ -95,9 +98,8 @@ export default function PageBody() {
               L 1200 1052
             "
             fill="none"
-            stroke="red"
-            width="2"
-           
+            stroke="#00bfa6"
+            strokeWidth="2"
           />
         </svg>
 
