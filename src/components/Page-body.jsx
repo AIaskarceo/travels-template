@@ -45,7 +45,7 @@ export default function PageBody() {
           motionPath: {
             path: pathRef.current,
             align: pathRef.current,
-            alignOrigin: [0.6, 0.6],
+            alignOrigin: [0.2, 0.2],
             autoRotate: true,
           },
           modifiers: {
@@ -85,8 +85,8 @@ export default function PageBody() {
           <path
             ref={pathRef}
             d="
-              M 20 500
-              L 1300 500
+              M 20 485.5
+              L 1300 485.5
               L 20 500
               C 20 655,30 635, 420 635
               Q 447 635, 447 675
