@@ -85,9 +85,9 @@ export default function PageBody() {
           <path
             ref={pathRef}
             d="
-              M 20 485.5
-              L 1300 485.5
-              L 20 485.5
+              M 20 500
+              L 1300 500
+              L 20 500
               C 20 655,30 635, 420 635
               Q 447 635, 447 675
               L 447 1000
