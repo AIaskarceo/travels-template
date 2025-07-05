@@ -45,7 +45,7 @@ export default function PageBody() {
           motionPath: {
             path: pathRef.current,
             align: pathRef.current,
-            alignOrigin: [0.5, 0.5],
+            alignOrigin: [0.6, 0.6],
             autoRotate: true,
           },
           modifiers: {
@@ -95,6 +95,8 @@ export default function PageBody() {
               L 1200 1052
             "
             fill="none"
+            stroke="red"
+            width="2"
            
           />
         </svg>

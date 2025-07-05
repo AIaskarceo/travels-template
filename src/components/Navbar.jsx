@@ -44,7 +44,7 @@ export default function Navbar() {
   }, [currentIndex]);
 
   return (
-    <div className="fixed top-   w-full z-50 bg-transparent text-white px-4 py-4 nav-bg">
+    <div className="fixed   w-full z-50 bg-transparent px-4 py-4 nav-bg">
       <nav className="flex justify-center space-x-8 sm:space-x-10 md:space-x-12 pr-4 relative">
 
         {/* only add the transition class after the first placement */}
@@ -75,7 +75,7 @@ export default function Navbar() {
               <Link
                 to={path}
                 className={`transition-colors duration-300 ${
-                  currentIndex === i ? "text-green-400" : "text-white"
+                  currentIndex === i ? "text-green-400" : "nav-text"
                 }`}
               >
                 {item}
