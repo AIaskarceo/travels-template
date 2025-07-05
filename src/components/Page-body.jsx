@@ -46,7 +46,7 @@ useLayoutEffect(() => {
         motionPath: {
           path: pathRef.current,
           align: pathRef.current,
-          alignOrigin: [0.5, 0.5],
+          alignOrigin: [0.7, 0.7],
           autoRotate: true,
         },
         modifiers: {
