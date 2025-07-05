@@ -46,7 +46,7 @@ useLayoutEffect(() => {
         motionPath: {
           path: pathRef.current,
           align: pathRef.current,
-          alignOrigin: [0.7, 0.7],
+          alignOrigin: [0.62, 0.62],
           autoRotate: true,
         },
         modifiers: {
@@ -98,8 +98,7 @@ useLayoutEffect(() => {
               L 1260 1112
             "
             fill="none"
-            stroke="#00bfa6"
-            strokeWidth="2"
+           
           />
         </svg>
 
