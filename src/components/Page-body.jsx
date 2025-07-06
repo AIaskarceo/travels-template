@@ -22,10 +22,12 @@ export default function PageBody() {
   const getResponsivePath = () => {
     const w = window.innerWidth;
     const h = window.innerHeight;
+    console.log(w)
+    console.log(h)
 
     // Scale helper functions based on your working resolution (1440x1024)
-    const scale = (value, base = 1440) => (value / base) * w;
-    const yScale = (value, base = 1024) => (value / base) * h;
+    const scale = (value, base = 1536) => (value / base) * w;
+    const yScale = (value, base = 730) => (value / base) * h;
 
     return `
       M ${scale(20)} ${yScale(545.5)}
