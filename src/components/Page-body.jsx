@@ -17,88 +17,107 @@ export default function PageBody() {
   const pathRef = useRef(null);
   const videoRef = useRef(null);
   const [duration, setDuration] = useState(0);
+  const [pathD, setPathD] = useState("");
 
-  
-useLayoutEffect(() => {
-  const video = videoRef.current;
+  const getResponsivePath = () => {
+    const w = window.innerWidth;
+    const h = window.innerHeight;
 
-  const handleLoaded = () => {
-    requestAnimationFrame(() => {
-      setDuration(video.duration);
+    // Scale helper functions based on your working resolution (1440x1024)
+    const scale = (value, base = 1440) => (value / base) * w;
+    const yScale = (value, base = 1024) => (value / base) * h;
 
-      gsap.set(wrapperRef.current, {
-        xPercent: -50,
-        yPercent: -50,
-      });
+    return `
+      M ${scale(20)} ${yScale(545.5)}
+      L ${scale(1350)} ${yScale(545.5)}
+      L ${scale(20)} ${yScale(545.5)}
+      C ${scale(20)} ${yScale(719)}, ${scale(75)} ${yScale(695)}, ${scale(465)} ${yScale(695)}
+      Q ${scale(492)} ${yScale(695)}, ${scale(492)} ${yScale(732)}
+      L ${scale(492)} ${yScale(1060)}
+      Q ${scale(492)} ${yScale(1112)}, ${scale(592)} ${yScale(1112)}
+      L ${scale(1260)} ${yScale(1112)}
+    `;
+  };
 
-      const tl = gsap.timeline({
-        scrollTrigger: {
-          trigger: ".motion-container",
-          start: "top top",
-          end: "bottom 90%",
-          scrub: 1,
-          markers: false,
-          invalidateOnRefresh: true,
-        },
-      });
+  useLayoutEffect(() => {
+    const video = videoRef.current;
 
-      tl.to(wrapperRef.current, {
-        motionPath: {
-          path: pathRef.current,
-          align: pathRef.current,
-          alignOrigin: [0.62, 0.62],
-          autoRotate: true,
-        },
-        modifiers: {
-          rotation: (value) => {
-            const angle = parseFloat(value);
-            const normalized = (angle + 360) % 360;
-            return normalized > 90 && normalized < 270 ? angle + 180 : angle;
+    const updatePath = () => {
+      setPathD(getResponsivePath());
+    };
+
+    const handleLoaded = () => {
+      requestAnimationFrame(() => {
+        setDuration(video.duration);
+
+        gsap.set(wrapperRef.current, {
+          xPercent: -50,
+          yPercent: -50,
+        });
+
+        const tl = gsap.timeline({
+          scrollTrigger: {
+            trigger: ".motion-container",
+            start: "top top",
+            end: "bottom 90%",
+            scrub: 1,
+            markers: false,
+            invalidateOnRefresh: true,
           },
-        },
-        ease: "none",
+        });
+
+        tl.to(wrapperRef.current, {
+          motionPath: {
+            path: pathRef.current,
+            align: pathRef.current,
+            alignOrigin: [0.62, 0.62],
+            autoRotate: true,
+          },
+          modifiers: {
+            rotation: (value) => {
+              const angle = parseFloat(value);
+              const normalized = (angle + 360) % 360;
+              return normalized > 90 && normalized < 270 ? angle + 180 : angle;
+            },
+          },
+          ease: "none",
+        });
+
+        tl.to(video, {
+          currentTime: video.duration,
+          ease: "none",
+        }, 0);
+
+        ScrollTrigger.refresh();
       });
+    };
 
-      tl.to(video, {
-        currentTime: video.duration,
-        ease: "none",
-      }, 0);
+    updatePath();
+    window.addEventListener("resize", updatePath);
 
-      // Refresh scroll trigger in case layout shifts
-      ScrollTrigger.refresh();
-    });
-  };
+    if (video.readyState >= 1) {
+      handleLoaded();
+    } else {
+      video.addEventListener("loadedmetadata", handleLoaded);
+    }
 
-  if (video.readyState >= 1) {
-    handleLoaded();
-  } else {
-    video.addEventListener("loadedmetadata", handleLoaded);
-  }
-
-  return () => {
-    video.removeEventListener("loadedmetadata", handleLoaded);
-  };
-}, []);
+    return () => {
+      video.removeEventListener("loadedmetadata", handleLoaded);
+      window.removeEventListener("resize", updatePath);
+    };
+  }, []);
 
   return (
-    <div className="text-gray-800 body-bg relative motion-container min-[100vh]:">
+    <div className="text-gray-800 body-bg relative motion-container">
       {/* 🛣️ SVG Path & Animated Bus */}
       <div className="absolute top-0 left-0 w-full h-full z-10 pointer-events-none overflow-visible">
         <svg className="w-full h-full">
           <path
             ref={pathRef}
-            d="
-              M 20 545.5
-              L 1350 545.5
-              L 20 545.5
-              C 20 719,75 695, 465 695
-              Q 492 695, 492 732
-              L 492 1060
-              Q 492 1112, 592 1112
-              L 1260 1112
-            "
+            d={pathD}
             fill="none"
-           
+            stroke="#00bfa6"
+            strokeWidth="2"
           />
         </svg>
 
