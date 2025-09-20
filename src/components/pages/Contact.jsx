@@ -130,6 +130,7 @@ export default function Contact() {
                 ref={messageRef}
                 rows="6"
                 placeholder="Enter your Message"
+
                 className="w-full p-4 rounded-lg bg-white/10 border border-white/30 focus:outline-none text-white placeholder-white/70"
               />
             </div>
